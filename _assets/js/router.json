@@ -1,0 +1,7 @@
+{
+	"router" : [ 
+		{"section" : "home"},
+		{"section" : "friends", "subsection" : "friends/{string}"},
+		{"section" : "contato"}
+	]
+}
