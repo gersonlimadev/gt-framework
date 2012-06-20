@@ -1,4 +1,9 @@
-/* @config */
+/*
+ * CONFIG
+ * gt-framework . v1.0
+ * by gersonthiago.com
+*/
+
 var CONFIG = {
 
 	VERSION : '1.0',
@@ -7,15 +12,8 @@ var CONFIG = {
 	
 	BASE_DIR : document.getElementsByTagName('body')[0].getAttribute('data-base')+'/_assets',
 
-	// URL site (string)
-	URL : null,
+	TITLE : document.getElementsByTagName('title')[0].text,
 
-	// pages of the site - menu (array)
-	ROUTER : [],
+	DEBUG : true
 
-	// page active and next page (array)
-	ROUTER_ACTIVE : [],
-
-	// execute intro (boolean)
-	INTRO: null
 };

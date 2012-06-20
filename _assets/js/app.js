@@ -1,83 +1,111 @@
 /*
- * script.js
- * jun/2012 - v1.0
- * by gersonthiago.com | @gersonthiago 
+ * APP
+ * gt-framework . v1.0
+ * by gersonthiago.com
 */
 
+	/* @private functions */
 
+	function _changeHash(){
 
-/* @main */
-var APP = {
-
-	_init : function(){
-		
-		if(CONFIG.ROUTER.length>0){
-			APP._changeURL();
-		} else if(CONFIG.ROUTER.length==0) {
-			$.getJSON(CONFIG.BASE_DIR+'/js/router.json', function(response){
-				var resp = response.router;
-				for(var i=0, t=resp.length; i<t; i++){
-					CONFIG.ROUTER.push(resp[i]);
-				}
-				APP._changeURL();
-			});
-		}
-
-	},
-
-	_changeURL : function(){
-
-		function verifyURL(url){
+		function _verifyHash(hash){
 			
-			// if url equal CONFIG.URl return
-			if(url=='#!/'+CONFIG.URL){ return; }
+			// if hash equal APP.hash return
+			if(hash=='#!/'+APP.hash){ return; }
 
-			console.log('verifyURL inicio -> '+url, 'verifyURL inicio CONFIG.URL -> '+CONFIG.URL);
+			//APP.debug('_verifyHash inicio -> '+hash, '_verifyHash inicio APP.hash -> '+APP.hash);
 			
-			if(url.search(/#!\//gi)==0){
-				console.log('TEM #!/');
-				url = url.replace(/#!\//gi,'');
+			if(hash.search(/#!\//gi)==0){
+				hash = hash.replace(/#!\//gi,'');
 			} else {
-				console.log('NAO TEM #!/ -> '+CONFIG.ROUTER);
-				url = CONFIG.ROUTER[0].section;
-				APP._setURL(url);
+				hash = APP.routersHash[0].section;
+				APP.setHash(hash);
 			}
 
-
-			// if url not empty
-			if(url.length==0){
-				url = CONFIG.ROUTER[0].section; 
-				APP.setURL(url); 
+			if(hash.length==0){
+				hash = APP.routersHash[0].section; 
+				APP.setHash(hash);
 			}
 
-			CONFIG.URL = url;
-			CONFIG.ROUTER_ACTIVE.push(CONFIG.URL);
-			APP.despacha();
+			APP.hash = hash;
+			APP.router.push(APP.hash);
+			APP.dispatch();
 		}
 
 		$(window).hashchange(function(){
-			verifyURL(location.hash);
+			_verifyHash(location.hash);
 		});
 
-		verifyURL(location.hash);
-
-	},
-
-	setURL : function(url){
-		console.log('setURL -> '+url);
-		location.hash = '#!/'+url;
-	},
-
-	despacha : function(){
-
-		console.log('DESPACHA -> '+CONFIG.URL);
+		_verifyHash(location.hash);
 
 	}
 
 
-};
 
-window.onload = function(){
-	$(document).ready(APP._init());
-}
+	/* @main */
+	var APP = {
+
+		// hash site (string)
+		hash : null,
+
+		// pages of the site - menu (array)
+		routersHash : [],
+
+		// page active and next page (array)
+		router : [],
+
+		// execute intro (boolean)
+		intro: null,
+
+
+		_init : function(){
+			
+			if(APP.routersHash.length>0){
+				APP._changeHash();
+			} else if(APP.routersHash.length==0) {
+				$.getJSON(/*CONFIG.BASE_DIR+*/'_assets/js/routersHash.json', function(response){
+					var resp = response.router;
+					for(var i=0, t=resp.length; i<t; i++){
+						APP.routersHash.push(resp[i]);
+					}
+					_changeHash();
+				});
+			}
+
+		},
+
+		debug : function(){
+			if(CONFIG.DEBUG){
+				for(var i=0,t=this.debug.arguments.length; i<t; i++){
+					console.log(this.debug.arguments[i]);
+				}
+			}
+		},
+
+		setHash : function(hash){
+			location.hash = '#!/'+hash;
+		},
+
+		dispatch : function(){
+
+			//APP.debug('DESPACHA -> '+APP.hash);
+			//APP.debug(APP.routersHash);
+			//APP.debug('CONFIG.title -> '+CONFIG.TITLE);
+
+		}
+
+
+	};
+
+	window.onload = function(){
+		$(document).ready(APP._init());
+	}
+
+
+
+
+
+
+
+
 
