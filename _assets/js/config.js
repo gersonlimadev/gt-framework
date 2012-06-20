@@ -1,5 +1,5 @@
 /*
- * CONFIG
+ * { CONFIG }
  * gt-framework . v1.0
  * by gersonthiago.com
 */

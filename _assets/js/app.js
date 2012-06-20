@@ -1,11 +1,10 @@
 /*
- * APP
+ * { APP }
  * gt-framework . v1.0
  * by gersonthiago.com
 */
 
 	/* @private functions */
-
 	function _changeHash(){
 
 		function _verifyHash(hash){
@@ -40,6 +39,35 @@
 
 	}
 
+	function _isPage(page){
+		for(var i=0,t=APP.routersHash.length; i<t; i++){
+			if(page==APP.routersHash[i].section){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	function _pageControl(action){
+
+		if(action=='hide'){ APP.router.shift(); }
+		
+		APP.debug('pageControl router -> '+APP.router);
+
+		var router = APP.router.length;
+
+		if(router==1){
+			APP.debug('execute -> APP.'+APP.router[0]);
+			eval('APP.'+APP.router[0]+'.show()');
+		} else if(router==2) {
+			eval('APP.'+APP.router[0]+'.hide()');
+		}
+	}
+
+
+
+
+
 
 
 	/* @main */
@@ -63,7 +91,7 @@
 			if(APP.routersHash.length>0){
 				APP._changeHash();
 			} else if(APP.routersHash.length==0) {
-				$.getJSON(/*CONFIG.BASE_DIR+*/'_assets/js/routersHash.json', function(response){
+				$.getJSON(/*CONFIG.BASE_DIR+*/'_assets/json/routersHash.json', function(response){
 					var resp = response.router;
 					for(var i=0, t=resp.length; i<t; i++){
 						APP.routersHash.push(resp[i]);
@@ -86,11 +114,20 @@
 			location.hash = '#!/'+hash;
 		},
 
-		dispatch : function(){
+		getHash : function(){
+			return location.hash.replace(/#!\//gi,'');
+		},
 
-			//APP.debug('DESPACHA -> '+APP.hash);
-			//APP.debug(APP.routersHash);
-			//APP.debug('CONFIG.title -> '+CONFIG.TITLE);
+		dispatch : function(){
+			
+			var isPage = _isPage(APP.router[0]);
+
+			APP.debug('DISPATCH TO '+APP.router[0]);
+			
+			if(isPage){
+				eval('APP.'+APP.router[0]+'.init()');
+			}
+
 
 		}
 
