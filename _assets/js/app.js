@@ -116,7 +116,7 @@
 
 				if(router==1){
 					if(APP[APP.router[0]].status===false){
-						APP[APP.router[0]].addEvents();
+						APP[APP.router[0]].init();
 					} else {
 						APP[APP.router[0]].show();
 					}

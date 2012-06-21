@@ -1,7 +1,7 @@
 {
 	"router" : [ 
 		{"section" : "home"},
-		{"section" : "friends", "subsection" : "friends/{string}"},
+		{"section" : "novidade", "subsection" : "novidade/{string}"},
 		{"section" : "contato"}
 	]
 }

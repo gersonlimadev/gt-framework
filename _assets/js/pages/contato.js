@@ -15,15 +15,15 @@ var APP = APP || {};
 			
 			APP.debug('SHOW CONTATO');
 
-			$('#container').html('<div class="page">'+APP.contato.data+'</div>');
-			$('#container .page').fadeIn(1000);
+			$('#content').html('<div class="page">'+APP.contato.data+'</div>');
+			$('#content .page').fadeIn(1000);
 
 		},
 
 		hide : function(){
 
 			APP.debug('HIDE CONTATO');
-			$('#container .page').fadeOut(2000, function(){
+			$('#content .page').fadeOut(2000, function(){
 
 				APP.debug('HIDE CONTATO OK');
 				APP.dispatch('hide');
@@ -32,7 +32,7 @@ var APP = APP || {};
 
 		},
 
-		addEvents : function(){
+		init : function(){
 			
 			APP.debug('contato debug');
 			
