@@ -7,6 +7,8 @@ var APP = APP || {};
 
 	APP.contato = {
 
+		status : false,
+
 		data : '',
 		
 		show : function(){
@@ -14,29 +16,33 @@ var APP = APP || {};
 			APP.debug('SHOW CONTATO');
 
 			$('#container').html('<div class="page">'+APP.contato.data+'</div>');
-
+			$('#container .page').fadeIn(1000);
 
 		},
 
 		hide : function(){
 
 			APP.debug('HIDE CONTATO');
+			$('#container .page').fadeOut(2000, function(){
 
-			_pageControl('hide');
+				APP.debug('HIDE CONTATO OK');
+				APP.dispatch('hide');
+
+			});
+
 		},
 
+		addEvents : function(){
+			
+			APP.debug('contato debug');
+			
+			$.getJSON(/*CONFIG.BASE_DIR+*/'_assets/json/pages/contato.json', function(response){
+				APP.contato.data = response.page[0].content;
 
-		init : function(){
-			APP.debug('APP CONTATO');
-			APP.debug(APP.contato.data);
-			if(APP.contato.data){
-				_pageControl();
-			} else {
-				$.getJSON(/*CONFIG.BASE_DIR+*/'_assets/json/pages/contato.json', function(response){
-					APP.contato.data = response.page[0].content;
-					_pageControl();
-				});
-			}
+				APP.contato.status = true;
+				APP.dispatch();
+
+			});
 
 		}
 

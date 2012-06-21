@@ -12,8 +12,6 @@
 			// if hash equal APP.hash return
 			if(hash=='#!/'+APP.hash){ return; }
 
-			//APP.debug('_verifyHash inicio -> '+hash, '_verifyHash inicio APP.hash -> '+APP.hash);
-			
 			if(hash.search(/#!\//gi)==0){
 				hash = hash.replace(/#!\//gi,'');
 			} else {
@@ -48,24 +46,6 @@
 		return false;
 	}
 
-	function _pageControl(action){
-
-		if(action=='hide'){ APP.router.shift(); }
-		
-		APP.debug('pageControl router -> '+APP.router);
-
-		var router = APP.router.length;
-
-		if(router==1){
-			APP.debug('execute -> APP.'+APP.router[0]);
-			eval('APP.'+APP.router[0]+'.show()');
-		} else if(router==2) {
-			eval('APP.'+APP.router[0]+'.hide()');
-		}
-	}
-
-
-
 
 
 
@@ -82,8 +62,8 @@
 		// page active and next page (array)
 		router : [],
 
-		// execute intro (boolean)
-		intro: null,
+		// load loader first (boolean)
+		loader: null,
 
 
 		_init : function(){
@@ -120,12 +100,30 @@
 
 		dispatch : function(){
 			
+			if(APP.dispatch.arguments.length>0){ 
+				if(APP.dispatch.arguments[0]=='hide'){
+					APP.router.shift();
+				}
+			}
+
 			var isPage = _isPage(APP.router[0]);
 
 			APP.debug('DISPATCH TO '+APP.router[0]);
 			
 			if(isPage){
-				eval('APP.'+APP.router[0]+'.init()');
+				
+				var router = APP.router.length;
+
+				if(router==1){
+					if(APP[APP.router[0]].status===false){
+						APP[APP.router[0]].addEvents();
+					} else {
+						APP[APP.router[0]].show();
+					}
+				} else if(router==2) {
+					APP[APP.router[0]].hide();
+				}
+
 			}
 
 
@@ -137,12 +135,3 @@
 	window.onload = function(){
 		$(document).ready(APP._init());
 	}
-
-
-
-
-
-
-
-
-
