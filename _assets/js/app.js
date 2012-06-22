@@ -38,6 +38,7 @@
 	}
 
 	function _isPage(page){
+		APP.debug('_isPage -> '+page);
 		for(var i=0,t=APP.routersHash.length; i<t; i++){
 			if(page==APP.routersHash[i].section){
 				return true;
@@ -63,7 +64,7 @@
 		router : [],
 
 		// load loader first (boolean)
-		loader: null,
+		loaderInitialized: false,
 
 
 		_init : function(){
@@ -99,9 +100,15 @@
 		},
 
 		dispatch : function(){
+
+			if(!APP.loaderInitialized){ 
+				APP.loader.init(); 
+				return false;
+			}
 			
 			if(APP.dispatch.arguments.length>0){ 
-				if(APP.dispatch.arguments[0]=='hide'){
+				var arg = APP.dispatch.arguments[0];
+				if(arg=='hide'){
 					APP.router.shift();
 				}
 			}
@@ -115,19 +122,48 @@
 				var router = APP.router.length;
 
 				if(router==1){
-					if(APP[APP.router[0]].status===false){
+					if(APP[APP.router[0]].initialized===false){
 						APP[APP.router[0]].init();
 					} else {
-						APP[APP.router[0]].show();
+						APP[APP.router[0]].show['fix']();
 					}
-				} else if(router==2) {
-					APP[APP.router[0]].hide();
+				} else if(router==2){
+					APP.dispatchToSub('hideSub');
 				}
 
 			}
 
 
+		},
+
+		dispatchToSub : function(){
+
+			if(APP.dispatchToSub.arguments.length==0){ return false; } 
+
+			var	hash = APP.router[0],
+				numHash = 0,
+				arg = APP.dispatchToSub.arguments[0];
+
+			if( (arg=='show') || (arg=='hideSub')){
+				if(hash.search('/')>0){ 
+					numHash = hash.split('/').length-1;
+				}
+
+				if(arg=='show'){
+					APP[APP.router[0]].show['sub'+numHash]();
+				} else if(arg=='hideSub'){
+					APP[APP.router[0]].hide['sub'+numHash]();
+				}
+
+			} else if(arg=='hide'){
+				
+				APP[APP.router[0]].hide['fix']();
+
+			}
+
 		}
+
+
 
 
 	};

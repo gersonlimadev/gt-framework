@@ -7,42 +7,68 @@ var APP = APP || {};
 
 	APP.contato = {
 
-		status : false,
+		initialized : false,
 
 		data : '',
 		
-		show : function(){
-			
-			APP.debug('SHOW CONTATO');
+		show : {
 
-			$('#content').html('<div class="page">'+APP.contato.data+'</div>');
-			$('#content .page').fadeIn(1000);
+			fix : function(){
+			
+				APP.debug('SHOW CONTATO');
+
+				$('#content').html('<div class="page">'+APP.contato.data+'</div>');
+				$('#content .page').fadeIn(1000);
+
+				APP.dispatchToSub('show');
+
+			},
+
+			/* 
+			 * /hash
+			*/
+			sub0 : function(){
+
+			}
 
 		},
 
-		hide : function(){
+		hide : {
 
-			APP.debug('HIDE CONTATO');
-			$('#content .page').fadeOut(2000, function(){
+			fix : function(){
+				
+				$('#content .page').fadeOut(2000, function(){
+					APP.dispatch('hide');
+				});
 
-				APP.debug('HIDE CONTATO OK');
-				APP.dispatch('hide');
+			}, 
 
-			});
+			/* 
+			 * /hash
+			*/
+			sub0 : function(){
+
+				APP.dispatchToSub('hide');
+
+			}
 
 		},
 
 		init : function(){
 			
-			APP.debug('contato debug');
-			
-			$.getJSON(/*CONFIG.BASE_DIR+*/'_assets/json/pages/contato.json', function(response){
-				APP.contato.data = response.page[0].content;
-
-				APP.contato.status = true;
+			function returnInit(){
+				APP.contato.initialized = true;
 				APP.dispatch();
+			}
 
-			});
+			if(APP.contato.data){
+				returnInit();
+			} else {
+				$.getJSON(/*CONFIG.BASE_DIR+*/'_assets/json/pages/contato.json', function(response){
+					APP.contato.data = response.page[0].content;
+					returnInit();
+				});
+			}
 
 		}
 

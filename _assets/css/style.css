@@ -53,24 +53,26 @@ body {
 
     #header {
     	position:relative;
-    	background:red;
+    	z-index:100;
     	width:800px; height:200px;
     	margin:0 auto 20px auto;
     }
     	#header h1{
     		position:absolute;
-    		top:30px; left:0;
+    		top:-70px; left:0;
     		text-align:center;
     		width:800px;
     	}
     	#header #nav{
     		position:absolute;
-    		top:150px; left:50%;
+    		top:120px; left:50%;
     		margin-left:-200px;
     		font-family: 'Imprima', sans-serif;
     		width:400px;
     	}
+    		#header #nav li.bt{display:none;}
     		#header #nav li{
+    			position:relative;
     			float:left;
     			width:100px;
     			text-align:center;
@@ -83,10 +85,13 @@ body {
 
     #content {
     	position:relative;
+    	z-index:1;
     	width:800px;
 		margin:0 auto;
+		padding-bottom:40px;
     }
 		.page {display:none;}
+		.page p{margin-bottom:10px;}
 
 
 
