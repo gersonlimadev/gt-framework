@@ -19,7 +19,9 @@
 				APP.setHash(hash);
 			}
 
-			if(hash.length==0){
+			isPage = _isPage(hash);
+
+			if( (hash.length==0) || (isPage == false) ){
 				hash = APP.routersHash[0].section; 
 				APP.setHash(hash);
 			}
@@ -44,17 +46,36 @@
 
 	}
 
-	function _isPage(page){
-		APP.debug('_isPage -> '+page);
-
-		//verificar se a url mandada existe, tanto [0] quanto [1]
-		for(var i=0,t=APP.routersHash.length; i<t; i++){
-			if(page==APP.routersHash[i].section){
-				return true;
-			}
+	function _isPage(hash){
+		
+		if( hash.search('/') > 0 ){ 
+			hash = hash.split('/'); 
+		} else {
+			hash = [hash];
 		}
-		//return false;
-		return true;
+
+		for( var i = 0,t = APP.routersHash.length; i < t; i++ ){
+			
+			if( hash[0] == APP.routersHash[i].section ){
+
+				var router = APP.routersHash[i];
+				if(router.subsection){
+					
+					var subsection = router.subsection.split('/'),
+						numSub = hash.length-1;
+
+					if( (subsection[numSub] == '{string}') || ( hash[numSub] == subsection[numSub] ) ) { 
+						return true; 
+					} else {
+						return false
+					}
+
+				} else { return true; }
+
+			}
+
+		}
+		return false;
 	}
 
 
@@ -139,32 +160,25 @@
 				}
 			}
 
-			var modulo = APP.getModule(),
-				isPage = _isPage(modulo);
+			var modulo = APP.getModule();
 
 			APP.debug('DISPATCH TO '+modulo);
-			APP.debug('_isPage '+isPage);
 			APP.debug('ROUTER '+APP.router);
 
-			if(isPage){
-				
-				var router = APP.router.length;
-				if(router==1){
-					if(!moduloEqual){
-						if(APP[modulo].initialized===false){
-							APP[modulo].init();
-						} else {
-							APP[modulo].show['fix']();
-						}
+			var router = APP.router.length;
+			if(router==1){
+				if(!moduloEqual){
+					if(APP[modulo].initialized===false){
+						APP[modulo].init();
 					} else {
-						APP.dispatchToSub('goSub');
+						APP[modulo].show['fix']();
 					}
-				} else if(router==2){
-					APP.dispatchToSub('hideSub');
+				} else {
+					APP.dispatchToSub('goSub');
 				}
-
+			} else if(router==2){
+				APP.dispatchToSub('hideSub');
 			}
-
 
 		},
 
