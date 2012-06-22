@@ -26,7 +26,14 @@
 
 			APP.hash = hash;
 			APP.router.push(APP.hash);
-			APP.dispatch();
+
+			if(APP.loaderInitialized){ 
+				APP.dispatch();
+			} else {
+				APP.loader.init(); 
+				return false;
+			}
+
 		}
 
 		$(window).hashchange(function(){
@@ -107,7 +114,7 @@
 			}
 		},
 
-		getModulo : function(){
+		getModule : function(){
 			var router = APP.router[0];
 			if(router.search('/')>0){
 				router = router.split('/')[0];
@@ -121,11 +128,6 @@
 
 		dispatch : function(){
 
-			if(!APP.loaderInitialized){ 
-				APP.loader.init(); 
-				return false;
-			}
-			
 			if(APP.dispatch.arguments.length>0){ 
 				var arg = APP.dispatch.arguments[0];
 				if(arg=='hide'){
@@ -137,7 +139,7 @@
 				}
 			}
 
-			var modulo = APP.getModulo(),
+			var modulo = APP.getModule(),
 				isPage = _isPage(modulo);
 
 			APP.debug('DISPATCH TO '+modulo);
@@ -170,7 +172,7 @@
 
 			if(APP.dispatchToSub.arguments.length==0){ return false; } 
 
-			var	modulo = APP.getModulo(),
+			var	modulo = APP.getModule(),
 				hash = APP.getFirstRouter(),
 				numSub = 0,
 				arg = APP.dispatchToSub.arguments[0];
