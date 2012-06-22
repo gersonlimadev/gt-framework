@@ -13,12 +13,12 @@ var APP = APP || {};
 
 		show : {
 
-			fix : function(){
+			fix : function(callback){
 					
 				$('#content').html('<div class="page">'+APP.home.data+'</div>');
 				$('#content .page').fadeIn(1000);
 
-				APP.dispatchToSub('show');
+				callback('show');
 								
 			},
 
@@ -34,10 +34,10 @@ var APP = APP || {};
 
 		hide : {
 
-			fix : function(){
+			fix : function(callback){
 					
 				$('#content .page').fadeOut(2000, function(){
-					APP.dispatch('hide');
+					callback('hide');
 				});
 							
 			},
@@ -45,20 +45,20 @@ var APP = APP || {};
 			/* 
 			 * /hash
 			*/
-			sub0 : function(){
+			sub0 : function(callback){
 				
-				APP.dispatchToSub('hide');
+				callback('hide');
 
 			}
 
 		},
 
 
-		init : function(){
+		init : function(callback){
 			
 			function returnInit(){
 				APP.home.initialized = true;
-				APP.dispatch();
+				callback();
 			}
 
 			if(APP.home.data){

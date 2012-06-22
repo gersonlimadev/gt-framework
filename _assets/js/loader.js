@@ -11,8 +11,6 @@ var APP = APP || {};
 		
 		addEvents : function(){
 
-			APP.debug('LOADER -> addEvents');
-
 			$('a[data-url=true]').live('click',function(e){
 				e.preventDefault();
 				var hash = $(this).attr('href').replace('/','');
@@ -21,9 +19,7 @@ var APP = APP || {};
 
 		},
 
-		init : function(){
-			
-			APP.debug('LOADER -> init');
+		init : function(callback){
 			
 			var header = $('#header');
 
@@ -41,7 +37,7 @@ var APP = APP || {};
 				window.setTimeout(function(){
 					APP.loader.addEvents();
 					APP.loaderInitialized = true;
-					APP.dispatch();
+					callback();
 				},delay+200);
 				
 			}});

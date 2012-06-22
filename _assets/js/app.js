@@ -32,7 +32,7 @@
 			if(APP.loaderInitialized){ 
 				APP.dispatch();
 			} else {
-				APP.loader.init(); 
+				APP.loader.init(APP.dispatch); 
 				return false;
 			}
 
@@ -161,17 +161,14 @@
 			}
 
 			var modulo = APP.getModule();
-
-			APP.debug('DISPATCH TO '+modulo);
-			APP.debug('ROUTER '+APP.router);
-
 			var router = APP.router.length;
+
 			if(router==1){
 				if(!moduloEqual){
 					if(APP[modulo].initialized===false){
-						APP[modulo].init();
+						APP[modulo].init(APP.dispatch);
 					} else {
-						APP[modulo].show['fix']();
+						APP[modulo].show['fix'](APP.dispatchToSub);
 					}
 				} else {
 					APP.dispatchToSub('goSub');
@@ -200,7 +197,7 @@
 				if(arg=='show'){
 					APP[modulo].show['sub'+numSub]();
 				} else if(arg=='hideSub'){
-					APP[modulo].hide['sub'+numSub]();
+					APP[modulo].hide['sub'+numSub](APP.dispatchToSub);
 				}
 
 			} else if(arg=='hide'){
@@ -217,7 +214,7 @@
 				}
 
 				if(!moduloEqual){
-					APP[modulo].hide['fix']();
+					APP[modulo].hide['fix'](APP.dispatch);
 				} else {
 					APP.dispatch('hide', true);
 				}
