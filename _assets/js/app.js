@@ -19,9 +19,16 @@
 				APP.setHash(hash);
 			}
 
-			isPage = _isPage(hash);
+			// test page exist
+			var isPage = _isPage(hash);
 
-			if( (hash.length==0) || (isPage == false) ){
+			// test module don't exist
+			var modulo = hash;
+			if( modulo.search('/') > 0 ){ 
+				modulo = modulo.split('/')[0]; 
+			}
+
+			if( (hash.length == 0) || (isPage == false) || (APP.hasOwnProperty(modulo) == false) ){
 				hash = APP.routersHash[0].section; 
 				APP.setHash(hash);
 			}
@@ -57,7 +64,7 @@
 		for( var i = 0,t = APP.routersHash.length; i < t; i++ ){
 			
 			if( hash[0] == APP.routersHash[i].section ){
-
+				
 				var router = APP.routersHash[i];
 				if(router.subsection){
 					
