@@ -129,6 +129,10 @@
 			if(APP.dispatch.arguments.length>0){ 
 				var arg = APP.dispatch.arguments[0];
 				if(arg=='hide'){
+					var moduloEqual = false;
+					if(APP.dispatch.arguments[1]){
+						if(APP.dispatch.arguments[1]==true){ moduloEqual = true; }
+					}
 					APP.router.shift();
 				}
 			}
@@ -137,15 +141,21 @@
 				isPage = _isPage(modulo);
 
 			APP.debug('DISPATCH TO '+modulo);
+			APP.debug('_isPage '+isPage);
+			APP.debug('ROUTER '+APP.router);
 
 			if(isPage){
 				
 				var router = APP.router.length;
 				if(router==1){
-					if(APP[modulo].initialized===false){
-						APP[modulo].init();
+					if(!moduloEqual){
+						if(APP[modulo].initialized===false){
+							APP[modulo].init();
+						} else {
+							APP[modulo].show['fix']();
+						}
 					} else {
-						APP[modulo].show['fix']();
+						APP.dispatchToSub('goSub');
 					}
 				} else if(router==2){
 					APP.dispatchToSub('hideSub');
@@ -162,25 +172,42 @@
 
 			var	modulo = APP.getModulo(),
 				hash = APP.getFirstRouter(),
-				numHash = 0,
+				numSub = 0,
 				arg = APP.dispatchToSub.arguments[0];
 
+			if(hash.search('/')>0){ 
+				numSub = hash.split('/').length-1; 
+			}
+
 			if( (arg=='show') || (arg=='hideSub')){
-				if(hash.search('/')>0){ 
-					numHash = hash.split('/').length-1;
-				}
 
 				if(arg=='show'){
-					console.log('NUMHASH '+numHash);
-					APP[modulo].show['sub'+numHash]();
+					APP[modulo].show['sub'+numSub]();
 				} else if(arg=='hideSub'){
-					APP[modulo].hide['sub'+numHash]();
+					APP[modulo].hide['sub'+numSub]();
 				}
 
 			} else if(arg=='hide'){
 				
-				APP[modulo].hide['fix']();
+				var prevRouter = APP.getFirstRouter(),
+					nextRouter = APP.router[1];
+					
+				if(prevRouter.search('/')>0){ prevRouter = prevRouter.split('/')[0]; }
+				if(nextRouter.search('/')>0){ nextRouter = nextRouter.split('/')[0]; }
+				
+				var moduloEqual = false;
+				if(prevRouter==nextRouter){ 
+					moduloEqual = true;
+				}
 
+				if(!moduloEqual){
+					APP[modulo].hide['fix']();
+				} else {
+					APP.dispatch('hide', true);
+				}
+
+			} else if(arg=='goSub'){
+				APP[modulo].show['sub'+numSub]();
 			}
 
 		}

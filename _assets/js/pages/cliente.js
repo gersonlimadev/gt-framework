@@ -15,8 +15,6 @@ var APP = APP || {};
 
 			fix : function(){
 			
-				APP.debug('SHOW CLIENTE');
-
 				var delay = 100,
 					clientes = '<ul>';
 
@@ -48,6 +46,7 @@ var APP = APP || {};
 			 * /hash/hash
 			*/
 			sub1 : function(){
+				
 				var infoCliente = null,
 					hash = APP.getHash(1);
 
@@ -64,10 +63,14 @@ var APP = APP || {};
 		hide : {
 
 			fix : function(){
-				
-				$('#content .page').fadeOut(2000, function(){
+				var delay = 200;
+				for(var i=$('.listaClientes li').length-1; i>=0; i--){
+					$('.listaClientes li:eq('+i+')').delay(delay).animate({'left':'-300px', 'opacity':0},{duration:300,easing:'easeInOutCirc'});
+					delay = delay+200;
+				}
+				window.setTimeout(function(){
 					APP.dispatch('hide');
-				});
+				},delay+200);
 
 			}, 
 
@@ -93,7 +96,6 @@ var APP = APP || {};
 		},
 
 		init : function(){
-			console.log('nit');
 			function returnInit(){
 				APP.cliente.initialized = true;
 				APP.dispatch();
