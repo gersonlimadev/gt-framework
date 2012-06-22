@@ -1,6 +1,7 @@
 {
 	"router" : [ 
 		{"section" : "home"},
+		{"section" : "cliente", "subsection" : "cliente/{string}"},
 		{"section" : "novidade", "subsection" : "novidade/{string}"},
 		{"section" : "contato"}
 	]
