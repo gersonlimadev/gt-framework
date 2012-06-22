@@ -15,8 +15,6 @@ var APP = APP || {};
 
 			fix : function(callback){
 			
-				APP.debug('SHOW CONTATO');
-
 				$('#content').html('<div class="page">'+APP.contato.data+'</div>');
 				$('#content .page').fadeIn(1000);
 
