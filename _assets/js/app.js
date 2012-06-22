@@ -39,12 +39,15 @@
 
 	function _isPage(page){
 		APP.debug('_isPage -> '+page);
+
+		//verificar se a url mandada existe, tanto [0] quanto [1]
 		for(var i=0,t=APP.routersHash.length; i<t; i++){
 			if(page==APP.routersHash[i].section){
 				return true;
 			}
 		}
-		return false;
+		//return false;
+		return true;
 	}
 
 
@@ -96,7 +99,24 @@
 		},
 
 		getHash : function(){
-			return location.hash.replace(/#!\//gi,'');
+			var hash = APP.hash.split('/');
+			if(APP.getHash.arguments.length>0){
+				return hash[APP.getHash.arguments[0]];
+			} else {
+				return hash;
+			}
+		},
+
+		getModulo : function(){
+			var router = APP.router[0];
+			if(router.search('/')>0){
+				router = router.split('/')[0];
+			}
+			return router;
+		},
+
+		getFirstRouter : function(){
+			return APP.router[0];
 		},
 
 		dispatch : function(){
@@ -113,19 +133,19 @@
 				}
 			}
 
-			var isPage = _isPage(APP.router[0]);
+			var modulo = APP.getModulo(),
+				isPage = _isPage(modulo);
 
-			APP.debug('DISPATCH TO '+APP.router[0]);
-			
+			APP.debug('DISPATCH TO '+modulo);
+
 			if(isPage){
 				
 				var router = APP.router.length;
-
 				if(router==1){
-					if(APP[APP.router[0]].initialized===false){
-						APP[APP.router[0]].init();
+					if(APP[modulo].initialized===false){
+						APP[modulo].init();
 					} else {
-						APP[APP.router[0]].show['fix']();
+						APP[modulo].show['fix']();
 					}
 				} else if(router==2){
 					APP.dispatchToSub('hideSub');
@@ -140,7 +160,8 @@
 
 			if(APP.dispatchToSub.arguments.length==0){ return false; } 
 
-			var	hash = APP.router[0],
+			var	modulo = APP.getModulo(),
+				hash = APP.getFirstRouter(),
 				numHash = 0,
 				arg = APP.dispatchToSub.arguments[0];
 
@@ -150,14 +171,15 @@
 				}
 
 				if(arg=='show'){
-					APP[APP.router[0]].show['sub'+numHash]();
+					console.log('NUMHASH '+numHash);
+					APP[modulo].show['sub'+numHash]();
 				} else if(arg=='hideSub'){
-					APP[APP.router[0]].hide['sub'+numHash]();
+					APP[modulo].hide['sub'+numHash]();
 				}
 
 			} else if(arg=='hide'){
 				
-				APP[APP.router[0]].hide['fix']();
+				APP[modulo].hide['fix']();
 
 			}
 
