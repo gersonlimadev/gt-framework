@@ -62,7 +62,7 @@ var APP = APP || {};
 			if(APP.contato.data){
 				returnInit();
 			} else {
-				$.getJSON(/*CONFIG.BASE_DIR+*/'_assets/json/pages/contato.json', function(response){
+				$.getJSON(/*CONFIG.BASE_DIR+*/'dev/json/pages/contato.json', function(response){
 					APP.contato.data = response.page[0].content;
 					returnInit();
 				});

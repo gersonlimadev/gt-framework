@@ -64,7 +64,7 @@ var APP = APP || {};
 			if(APP.home.data){
 				returnInit();
 			} else {
-				$.getJSON(/*CONFIG.BASE_DIR+*/'_assets/json/pages/home.json', function(response){
+				$.getJSON(/*CONFIG.BASE_DIR+*/'dev/json/pages/home.json', function(response){
 					APP.home.data = response.page[0].content;
 					returnInit();
 				});

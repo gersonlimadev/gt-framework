@@ -110,7 +110,7 @@
 			if(APP.routersHash.length>0){
 				APP._changeHash();
 			} else if(APP.routersHash.length==0) {
-				$.getJSON(/*CONFIG.BASE_DIR+*/'_assets/json/routersHash.json', function(response){
+				$.getJSON(/*CONFIG.BASE_DIR+*/'dev/json/routersHash.json', function(response){
 					var resp = response.router;
 					for(var i=0, t=resp.length; i<t; i++){
 						APP.routersHash.push(resp[i]);
