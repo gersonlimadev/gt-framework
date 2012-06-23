@@ -1,11 +1,11 @@
 /*
- * { PAGE } - LOADER
+ * { PAGE } - MAIN
  * gt-framework . v1.0
  * by gersonthiago.com
 */
 var APP = APP || {};
 
-	APP.loader = {
+	APP.main = {
 
 		data : '',
 		
@@ -35,8 +35,8 @@ var APP = APP || {};
 				}
 
 				window.setTimeout(function(){
-					APP.loader.addEvents();
-					APP.loaderInitialized = true;
+					APP.main.addEvents();
+					APP.mainInitialized = true;
 					callback();
 				},delay+200);
 				

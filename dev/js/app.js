@@ -49,10 +49,10 @@
 			APP.hash = hash;
 			APP.router.push(APP.hash);
 
-			if(APP.loaderInitialized){ 
+			if(APP.mainInitialized){ 
 				APP.dispatch();
 			} else {
-				APP.loader.init(APP.dispatch); 
+				APP.main.init(APP.dispatch); 
 				return false;
 			}
 
@@ -114,8 +114,8 @@
 		// page active and next page (array)
 		router : [],
 
-		// load loader first (boolean)
-		loaderInitialized: false,
+		// load main first (boolean)
+		mainInitialized: false,
 
 
 		_init : function(){
