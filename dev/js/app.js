@@ -28,10 +28,23 @@
 				modulo = modulo.split('/')[0]; 
 			}
 
-			if( (hash.length == 0) || (isPage == false) || (APP.hasOwnProperty(modulo) == false) ){
+			// redirect to page 404 - notFound
+			if( (isPage == false) || (APP.hasOwnProperty(modulo) == false) ){
+				if( APP.hasOwnProperty('notFound') == false ){
+					hash = APP.routersHash[0].section;
+					APP.setHash(hash);
+				} else if( APP.hasOwnProperty('notFound') == true ){
+					hash = 'notFound';
+					APP.setHash(hash);
+				}
+			}
+
+			if( hash.length == 0 ){
 				hash = APP.routersHash[0].section; 
 				APP.setHash(hash);
 			}
+
+
 
 			APP.hash = hash;
 			APP.router.push(APP.hash);
