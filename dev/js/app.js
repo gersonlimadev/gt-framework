@@ -10,28 +10,22 @@
 		function _verifyHash(hash){
 			
 			// if hash equal APP.hash return
-			if(hash=='#!/'+APP.hash){ return; }
+			if(hash == '#!/'+APP.hash){ return; }
 
-			if(hash.search(/#!\//gi)==0){
+			if(hash.search(/#!\//gi) == 0){
 				hash = hash.replace(/#!\//gi,'');
 			} else {
-				hash = APP.routersHash[0].section;
+				hash = APP.getFirstHash();
 				APP.setHash(hash);
 			}
 
 			// test page exist
-			var isPage = _isPage(hash);
-
-			// test module don't exist
-			var modulo = hash;
-			if( modulo.search('/') > 0 ){ 
-				modulo = modulo.split('/')[0]; 
-			}
+			var isPage = testHash(hash);
 
 			// redirect to page 404 - notFound
-			if( (isPage == false) || (APP.hasOwnProperty(modulo) == false) ){
+			if( (isPage.result == false) || (APP.hasOwnProperty(isPage.module) == false) ){
 				if( APP.hasOwnProperty('notFound') == false ){
-					hash = APP.routersHash[0].section;
+					hash = APP.getFirstHash();
 					APP.setHash(hash);
 				} else if( APP.hasOwnProperty('notFound') == true ){
 					hash = 'notFound';
@@ -40,7 +34,7 @@
 			}
 
 			if( hash.length == 0 ){
-				hash = APP.routersHash[0].section; 
+				hash = APP.getFirstHash();
 				APP.setHash(hash);
 			}
 
@@ -66,36 +60,54 @@
 
 	}
 
-	function _isPage(hash){
+	function testHash(hash){
 		
 		if( hash.search('/') > 0 ){ 
+
 			hash = hash.split('/'); 
-		} else {
-			hash = [hash];
-		}
 
-		for( var i = 0,t = APP.routersHash.length; i < t; i++ ){
-			
-			if( hash[0] == APP.routersHash[i].section ){
-				
-				var router = APP.routersHash[i];
-				if(router.subsection){
-					
-					var subsection = router.subsection.split('/'),
-						numSub = hash.length-1;
+			var i = 0,
+				t = hash.length;
 
-					if( (subsection[numSub] == '{string}') || ( hash[numSub] == subsection[numSub] ) ) { 
-						return true; 
+			for(; i < t; i++){
+				// transform the hash, in string
+				// replace string for {string}
+				// and numbers for {number}
+				if( i != 0){
+					if( $.isNumeric( hash[i] ) ){
+						hash[i] = '{number}';
 					} else {
-						return false
+						hash[i] = '{string}';
 					}
-
-				} else { return true; }
+				}
 
 			}
 
+			hash = hash.join('/');
 		}
-		return false;
+		
+		var i = 0,
+			t = APP.routersHash.length;
+
+		for(; i < t; i++){
+			
+			var ii = 0,
+				tt = APP.routersHash[i].routers.length;
+
+			for(; ii < tt; ii++){
+				if( hash == APP.routersHash[i].routers[ii] ){
+					return {
+						result : true,
+						module : APP.routersHash[i].module
+					}
+				}
+			}
+
+		}
+		return {
+			result : false,
+			module : 'notFound'
+		};
 	}
 
 
@@ -108,8 +120,8 @@
 		// hash site (string)
 		hash : null,
 
-		// pages of the site - menu (array)
-		routersHash : [],
+		// pages of the site - menu (obj)
+		routersHash : null,
 
 		// page active and next page (array)
 		router : [],
@@ -119,15 +131,11 @@
 
 
 		_init : function(){
-			
-			if(APP.routersHash.length>0){
+			if(APP.routersHash != null){
 				APP._changeHash();
-			} else if(APP.routersHash.length==0) {
+			} else if(APP.routersHash == null) {
 				$.getJSON(/*CONFIG.BASE_DIR+*/'dev/json/routersHash.json', function(response){
-					var resp = response.router;
-					for(var i=0, t=resp.length; i<t; i++){
-						APP.routersHash.push(resp[i]);
-					}
+					APP.routersHash = response.router;
 					_changeHash();
 				});
 			}
@@ -147,20 +155,25 @@
 		},
 
 		getHash : function(){
+			
 			var hash = APP.hash.split('/');
-			if(APP.getHash.arguments.length>0){
+
+			// arguments, number hash position
+			if(APP.getHash.arguments.length > 0){
 				return hash[APP.getHash.arguments[0]];
 			} else {
 				return hash;
 			}
+
+		},
+
+		getFirstHash : function(){
+			return APP.routersHash[0].routers[0];
 		},
 
 		getModule : function(){
-			var router = APP.router[0];
-			if(router.search('/')>0){
-				router = router.split('/')[0];
-			}
-			return router;
+			var router = testHash(APP.router[0]);
+			return router.module;
 		},
 
 		getFirstRouter : function(){
@@ -168,7 +181,7 @@
 		},
 
 		dispatch : function(){
-
+			
 			if(APP.dispatch.arguments.length>0){ 
 				var arg = APP.dispatch.arguments[0];
 				if(arg=='hide'){
@@ -183,9 +196,9 @@
 			var modulo = APP.getModule();
 			var router = APP.router.length;
 
-			if(router==1){
+			if(router == 1){
 				if(!moduloEqual){
-					if(APP[modulo].initialized===false){
+					if(APP[modulo].initialized === false){
 						APP[modulo].init(APP.dispatch);
 					} else {
 						APP[modulo].show['fix'](APP.dispatchToSub);
@@ -193,7 +206,7 @@
 				} else {
 					APP.dispatchToSub('goSub');
 				}
-			} else if(router==2){
+			} else if(router == 2){
 				APP.dispatchToSub('hideSub');
 			}
 
@@ -246,10 +259,8 @@
 		}
 
 
-
-
 	};
 
-	window.onload = function(){
-		$(document).ready(APP._init());
-	}
+	$(document).ready(function(){
+		APP._init();
+	});
