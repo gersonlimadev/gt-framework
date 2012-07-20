@@ -1,8 +1,20 @@
 {
 	"router" : [ 
-		{"section" : "home"},
-		{"section" : "cliente", "subsection" : "cliente/{string}"},
-		{"section" : "novidade", "subsection" : "novidade/{string}"},
-		{"section" : "contato"}
+		{
+			"routers" : ["home"],
+			"module" : "home"
+		},
+		{
+			"routers" : ["cliente", "cliente/{string}"],
+			"module" : "cliente"
+		},
+		{
+			"routers" : ["novidade", "novidade/{string}"],
+			"module" : "novidade"
+		},
+		{
+			"routers" : ["contato", "contato/{string}"],
+			"module" : "contato"
+		}
 	]
 }
